@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: desafio-picpay-backend
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://desafio-picpay-db:3306/desafio-picpay-db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    username: root
+    password: desafio-picpay-db-pass

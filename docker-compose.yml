@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+
+  mysql:
+    image: mysql:8.0.32
+    container_name: desafio-picpay-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - desafio-picpay-db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: desafio-picpay-db
+      MYSQL_ROOT_PASSWORD: desafio-picpay-db-pass
+    restart: unless-stopped
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: luizmiguelvb/desafio-picpay-backend
+    container_name: desafio-picpay-backend
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      - ADDITIONAL_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xmx1G -Xms128m -XX:MaxMetaspaceSize=128m
+      - PROFILE=dev
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  desafio-picpay-db:
